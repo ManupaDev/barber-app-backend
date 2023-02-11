@@ -6,7 +6,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
   res.status(200).json({
     status: "success",
-    data: users,
+    users: users,
   });
 };
 
@@ -23,7 +23,7 @@ export const createUser = async (req: Request, res: Response) => {
 
   res.status(201).json({
     status: "success",
-    data: newUser,
+    newUser: newUser,
   });
 };
 
