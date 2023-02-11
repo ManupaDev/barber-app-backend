@@ -25,3 +25,18 @@ export const createSlot = async (req: Request, res: Response) => {
     newSlot: newSlot,
   });
 };
+
+export const deleteSlotById = async (req: Request, res: Response) => {
+  const {id} = req.params;
+
+  const deletedSlot = await prisma.slot.delete({
+    where: {
+      id: parseInt(id,10),
+    },
+  })
+
+  res.status(204).json({
+    status: "success",
+    deletedSlot: deletedSlot,
+  });
+};
