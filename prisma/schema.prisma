@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  uid String @id
+}
+
+model Availability {
+  id Int @id @default(autoincrement())
+  on DateTime
+  slots Int[] 
+}
+
+model Slot {
+  id Int @id @default(autoincrement())
+  stime DateTime
+  etime DateTime
+}
