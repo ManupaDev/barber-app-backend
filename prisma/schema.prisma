@@ -12,13 +12,24 @@ model User {
 }
 
 model Availability {
-  id Int @id @default(autoincrement())
+  id Int      @id @default(autoincrement())
   on DateTime
-  slots Int[] 
+  slots SlotsOnAvailabilities[]
 }
 
 model Slot {
-  id Int @id @default(autoincrement())
+  id    Int      @id @default(autoincrement())
   stime DateTime
   etime DateTime
+  availabilities SlotsOnAvailabilities[]
+}
+
+model SlotsOnAvailabilities {
+  slot   Slot @relation(fields: [slotId], references: [id])
+  slotId Int
+  availability Availability @relation(fields: [availabilityId], references: [id])
+  availabilityId Int
+  assignedAt DateTime @default(now())
+  assignedBy String
+  @@id([slotId, availabilityId])
 }

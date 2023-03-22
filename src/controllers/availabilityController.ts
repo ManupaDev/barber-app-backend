@@ -10,11 +10,23 @@ export const getAllAvailabilities = async (req: Request, res: Response) => {
     const selectedDate = dayjs(date.toString()).hour(0).minute(0).second(0).millisecond(0);
     const nextDate = selectedDate.add(1, "day");
 
-    const availability = await prisma.availability.findMany({
+    const availability = await prisma.availability.findFirst({
       where: {
         on: {
           lt: nextDate.toDate(),
           gt: selectedDate.toDate(),
+        },
+      },
+      include: {
+        slots: {
+          orderBy: {
+            slot: {
+              stime: "asc",
+            },
+          },
+          select: {
+            slot: true,
+          },
         },
       },
     });
@@ -52,17 +64,48 @@ export const createAvailability = async (req: Request, res: Response) => {
   const { on, slots } = req.body;
   console.log(slots);
 
-  const newAvailability = await prisma.availability.create({
-    data: {
-      on: dayjs(on).toDate(),
-      slots: slots,
+  const selectedDate = dayjs(on).hour(0).minute(0).second(0).millisecond(0);
+  const nextDate = selectedDate.add(1, "day");
+
+  const existingAvailability = await prisma.availability.findFirst({
+    where: {
+      on: {
+        lt: nextDate.toDate(),
+        gt: selectedDate.toDate(),
+      },
     },
   });
 
-  res.status(201).json({
-    status: "success",
-    newAvailability: newAvailability,
-  });
+  if (!existingAvailability) {
+    const newAvailability = await prisma.availability.create({
+      data: {
+        on: dayjs(on).toDate(),
+      },
+    });
+  
+    slots.forEach(async (slot: number) => {
+      const newSlotsOnAvailability = await prisma.slotsOnAvailabilities.create({
+        data: {
+          availabilityId: newAvailability.id,
+          slotId: slot,
+          assignedBy: "System",
+        },
+      });
+    });
+  
+    res.status(201).json({
+      status: "success",
+      newAvailability: newAvailability,
+    });
+
+  }else{
+    res.status(400).json({
+      status: "failure",
+      newAvailability: null,
+    });
+  }
+
+  
 };
 
 export const deleteAvailabilityById = async (req: Request, res: Response) => {
