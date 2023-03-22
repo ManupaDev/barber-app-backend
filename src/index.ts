@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import userRouter from "./routers/userRouter";
 import slotRouter from "./routers/slotRouter";
 import { Prisma, PrismaClient } from "@prisma/client";
+import availabilityRouter from "./routers/availabilityRouter";
 export const prisma = new PrismaClient();
 const cors = require('cors')
 
@@ -13,7 +14,7 @@ app.use(express.json());
 
 //! Mount Routers
 app.use("/api/users", userRouter);
-// app.use("/api/availabilities", userRouter);
+app.use("/api/availabilities", availabilityRouter);
 app.use("/api/slots", slotRouter);
 
 const server = app.listen(8000, () => {

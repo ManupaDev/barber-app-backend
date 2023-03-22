@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../index";
+import dayjs from "dayjs";
 
 export const getAllSlots = async (req: Request, res: Response) => {
   const slots = await prisma.slot.findMany();
@@ -15,8 +16,8 @@ export const createSlot = async (req: Request, res: Response) => {
 
   const newSlot = await prisma.slot.create({
     data: {
-      stime: stime,
-      etime: etime,
+      stime: dayjs(stime).toDate(),
+      etime: dayjs(etime).toDate(),
     },
   });
 
