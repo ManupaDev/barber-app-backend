@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 export const getAllAvailabilities = async (req: Request, res: Response) => {
   if (req.query.date) {
     const { date } = req.query;
-    console.log(date);
 
     const selectedDate = dayjs(date.toString()).hour(0).minute(0).second(0).millisecond(0);
     const nextDate = selectedDate.add(1, "day");
@@ -62,7 +61,7 @@ export const getAvailabilityById = async (req: Request, res: Response) => {
 
 export const createAvailability = async (req: Request, res: Response) => {
   const { on, slots } = req.body;
-  console.log(slots);
+  
 
   const selectedDate = dayjs(on).hour(0).minute(0).second(0).millisecond(0);
   const nextDate = selectedDate.add(1, "day");
